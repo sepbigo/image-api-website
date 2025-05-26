@@ -10,45 +10,51 @@ function updateResolution(img) {
   resolutionDisplay.textContent = `分辨率: ${img.naturalWidth} x ${img.naturalHeight}`;
 }
 
-let musicPlaying = true;
-let imageHistory = [];
-
-function loadNewImage() {
-  const url = "https://api.18xo.eu.org/random?type=img&t=" + Date.now();
-  img.src = url;
-  img.dataset.src = url;
-
-  imageHistory.unshift(url);
-  if (imageHistory.length > 6) imageHistory.pop();
+function fetchImage() {
+  fetch(API_URL)
+    .then(res => res.blob())
+    .then(blob => {
+      const url = URL.createObjectURL(blob);
+      showImage(url);
+      addThumbnail(url);
+    });
 }
 
-function renderThumbnails() {
-  thumbnailContainer.innerHTML = '';
-  imageHistory.forEach((url, index) => {
-    if (index === 0) return; // 当前显示的主图不重复显示为缩略图
-    const thumb = document.createElement("img");
-    thumb.src = url;
+function showImage(url) {
+  currentIndex = history.length;
+  history.push(url);
+  mainImg.src = url;
+  mainImg.onload = () => updateResolution(mainImg);
+  highlightThumbnail(currentIndex);
+}
 
-    // 点击：切换主图
-    thumb.onclick = () => {
-      img.src = url;
-      img.dataset.src = url;
-    };
+function addThumbnail(url) {
+  if (history.length > 14) {
+    history.shift();
+    thumbContainer.removeChild(thumbContainer.firstChild);
+    currentIndex--;
+  }
+  const img = document.createElement("img");
+  img.src = url;
+  img.addEventListener("click", () => {
+    mainImg.src = url;
+    currentIndex = history.indexOf(url);
+    mainImg.onload = () => updateResolution(mainImg);
+    highlightThumbnail(currentIndex);
+  });
+  img.addEventListener("dblclick", () => {
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "wallpaper.jpg";
+    link.click();
+  });
+  thumbContainer.appendChild(img);
+}
 
-    // 双击：下载原图
-    thumb.ondblclick = () => {
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = "wallpaper.jpg";
-      link.click();
-    };
-
-    // 高亮当前图
-    if (url === img.dataset.src) {
-      thumb.classList.add("active");
-    }
-
-    thumbnailContainer.appendChild(thumb);
+function highlightThumbnail(index) {
+  const thumbs = thumbContainer.querySelectorAll("img");
+  thumbs.forEach((img, i) => {
+    img.classList.toggle("active", i === index);
   });
 }
 
@@ -69,8 +75,7 @@ function toggleNightMode() {
   document.body.classList.toggle("dark");
 }
 
-// 背景音乐
-bgMusic.src = "https://tc.cecily.eu.org/file/1748193433058_石进-夜的钢琴曲五 (钢琴曲)-《非诚勿扰2》电影插曲.flac"; // 请替换为你自己的音乐链接
+bgMusic.src = "https://tc.cecily.eu.org/file/1748193433058_石进-夜的钢琴曲五 (钢琴曲)-《非诚勿扰2》电影插曲.flac"; // 可替换为你自己的音乐地址
 bgMusic.volume = 0.6;
 bgMusic.addEventListener("play", () => {
   bgMusic.animate([{ volume: 0 }, { volume: 0.6 }], {
@@ -79,7 +84,6 @@ bgMusic.addEventListener("play", () => {
   });
 });
 
-// 初始化
 fetchImage();
 setInterval(fetchImage, 5000);
 setInterval(updateDateTime, 1000);
