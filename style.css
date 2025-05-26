@@ -1,42 +1,64 @@
+/* 字体与基础设置 */
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  transition: background 0.5s, color 0.5s;
+  font-family: 'Noto Sans SC', sans-serif;
   background: #fff;
   color: #000;
+  transition: background 0.5s, color 0.5s;
 }
+
 body.dark {
-  background: #111;
-  color: #eee;
+  background: #0a0a0a;
+  color: #f0f0f0;
 }
+
+/* 页面容器 */
 .container {
   text-align: center;
   padding: 20px;
 }
+
 h1 {
-  font-size: 2em;
+  font-size: 2.2em;
   margin: 0.5em 0 0.2em;
+  background: linear-gradient(to right, #f66, #f90);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
+
 .subtitle {
   font-size: 1em;
   color: #666;
   margin-bottom: 20px;
 }
+
 .main-img {
   max-width: 100%;
   height: auto;
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 }
+
 .resolution,
 .download-btn {
   margin-top: 10px;
 }
+
 .download-btn {
-  padding: 6px 14px;
-  font-size: 14px;
+  padding: 8px 18px;
+  font-size: 15px;
+  background: linear-gradient(to right, #4facfe, #00f2fe);
+  color: white;
+  border: none;
+  border-radius: 24px;
   cursor: pointer;
+  transition: transform 0.2s;
 }
+.download-btn:hover {
+  transform: scale(1.05);
+}
+
+/* 缩略图样式 */
 .thumbs {
   display: flex;
   flex-wrap: wrap;
@@ -49,29 +71,57 @@ h1 {
   object-fit: cover;
   margin: 5px;
   border: 2px solid transparent;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
   transition: border 0.3s;
 }
 .thumbs img.active {
   border: 2px solid #00f;
 }
-footer {
-  margin-top: 30px;
-  font-size: 14px;
-}
+
+/* 夜间模式切换按钮 */
 .night-toggle {
   position: fixed;
   top: 10px;
   right: 10px;
   z-index: 10;
 }
+.night-toggle button {
+  padding: 8px 14px;
+  border-radius: 24px;
+  border: none;
+  background: linear-gradient(to right, #667eea, #764ba2);
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+.night-toggle button:hover {
+  opacity: 0.9;
+}
+
+/* 页脚样式 */
+footer {
+  text-align: center;
+  padding: 20px 0 10px;
+  font-size: 14px;
+  color: #888;
+}
+footer #dateTime {
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+footer .copyright {
+  font-size: 13px;
+}
+
+/* 樱花背景 */
 canvas#bgCanvas {
   position: fixed;
   top: 0;
   left: 0;
+  z-index: -1;
   width: 100%;
   height: 100%;
-  z-index: -1;
   pointer-events: none;
 }
