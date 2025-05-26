@@ -59,5 +59,5 @@ document.addEventListener("DOMContentLoaded", () => {
     thumbs.innerHTML = "";
     const start = currentPage * thumbsPerPage;
     const end = start + thumbsPerPage;
-    const pageItems =
+    const
 ::contentReference[oaicite:4]{index=4}
