@@ -5,12 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>春田花花壁纸站</title>
   <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body oncontextmenu="return false">
   <canvas id="bgCanvas"></canvas>
 
   <div class="night-toggle">
-    <button onclick="toggleNightMode()">夜间模式切换</button>
+    <button onclick="toggleNightMode()">夜间模式</button>
   </div>
 
   <div class="container">
@@ -20,11 +21,13 @@
     <img id="mainImg" class="main-img" src="" alt="图片加载中...">
     <div class="resolution" id="resolution"></div>
     <button class="download-btn" onclick="downloadImage()">下载壁纸</button>
+
     <div class="thumbs" id="thumbContainer"></div>
   </div>
 
   <footer>
-    <span id="dateTime"></span>
+    <div id="dateTime"></div>
+    <div class="copyright">© 2025 春田花花疯人院 版权所有</div>
   </footer>
 
   <audio id="bgMusic" autoplay loop></audio>
