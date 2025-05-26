@@ -62,8 +62,7 @@ body.dark header h2 {
   object-fit: contain;
   cursor: zoom-in;
   transition: transform .3s, opacity .3s;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  border-radius: 12px;  /* 保留圆角 */
   opacity: 0;
 }
 #main-image.zoomed {
