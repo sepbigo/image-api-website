@@ -85,6 +85,12 @@ img {
   background: #1976d2;
 }
 
+.visit-count {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #999;
+}
+
 .thumbnails {
   display: flex;
   justify-content: center;
@@ -121,13 +127,6 @@ img {
   color: #aaa;
 }
 
-.visit-count {
-  text-align: center;
-  font-size: 13px;
-  margin-top: 5px;
-  color: #999;
-}
-
 #sakura-container {
   position: fixed;
   pointer-events: none;
@@ -146,6 +145,7 @@ img {
   background: radial-gradient(circle, pink 40%, transparent 40%);
   border-radius: 50%;
   animation: fall linear infinite;
+  opacity: 0.5;
 }
 
 @keyframes fall {
