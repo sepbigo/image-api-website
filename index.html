@@ -2,36 +2,45 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>春田花花壁纸站</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>高清壁纸轮播站</title>
   <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
 </head>
-<body oncontextmenu="return false">
-  <canvas id="bgCanvas"></canvas>
+<body>
 
-  <div class="night-toggle">
-    <button onclick="toggleNightMode()">夜间模式</button>
-  </div>
+  <!-- 樱花背景容器 -->
+  <div id="sakura-container"></div>
 
+  <!-- 标题区域 -->
+  <header class="header">
+    <h1>高清壁纸轮播站</h1>
+    <p class="subtitle">每 5 秒自动切换，让灵感不断更新</p>
+    <div class="header-buttons">
+      <button id="modeToggle">🌙 夜间模式</button>
+      <button id="refreshBtn">🔄 刷新图片</button>
+    </div>
+  </header>
+
+  <!-- 浏览次数 -->
+  <div class="visit-count" id="visitCount">浏览次数：0</div>
+
+  <!-- 主图容器 -->
   <div class="container">
-    <h1>春田花花壁纸站</h1>
-    <p class="subtitle">由 春田花花疯人院 强力搭建的壁纸站</p>
-
-    <img id="mainImg" class="main-img" src="" alt="图片加载中...">
-    <div class="resolution" id="resolution"></div>
-    <button class="download-btn" onclick="downloadImage()">下载壁纸</button>
-
-    <div class="thumbs" id="thumbContainer"></div>
+    <div id="loading" class="loading">加载中...</div>
+    <img id="mainImage" src="" alt="加载中..." />
+    <div id="info" class="info">分辨率：-- x --</div>
+    <a id="downloadBtn" href="#" download class="download-btn">下载图片</a>
   </div>
 
-  <footer>
-    <div id="dateTime"></div>
-    <div class="copyright">© 2025 春田花花疯人院 版权所有</div>
+  <!-- 缩略图导航 -->
+  <div class="thumbnails" id="thumbnails"></div>
+
+  <!-- 页脚信息栏 -->
+  <footer class="footer">
+    <div id="datetime">时间加载中...</div>
+    <div id="ip">IP 加载中...</div>
   </footer>
 
-  <audio id="bgMusic" autoplay loop></audio>
-  <script src="background.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
