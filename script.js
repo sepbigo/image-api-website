@@ -5,7 +5,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const themeBtn = document.getElementById("toggle-theme");
   const fsBtn = document.getElementById("fullscreen-btn");
   const dlBtn = document.getElementById("download-btn");
-  const clearCacheBtn = document.getElementById("clear-cache");
   const ipEl = document.getElementById("client-ip");
   const timeEl = document.getElementById("current-time");
   const resEl = document.getElementById("resolution");
