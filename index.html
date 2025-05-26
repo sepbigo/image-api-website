@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>图片API展示</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      transition: background 0.5s, color 0.5s;
+      background: #fff;
+      color: #000;
+    }
+    body.dark {
+      background: #111;
+      color: #eee;
+    }
+    .container {
+      text-align: center;
+      padding-top: 20px;
+    }
+    .main-img {
+      max-width: 100%;
+      height: auto;
+    }
+    .resolution, .download-btn {
+      margin-top: 10px;
+    }
+    .thumbs {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    .thumbs img {
+      width: 80px;
+      height: 60px;
+      object-fit: cover;
+      margin: 5px;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: border 0.3s;
+    }
+    .thumbs img.active {
+      border: 2px solid #00f;
+    }
+    footer {
+      margin-top: 20px;
+      font-size: 14px;
+    }
+    .night-toggle {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      z-index: 10;
+    }
+    canvas#bgCanvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: -1;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body oncontextmenu="return false">
+  <canvas id="bgCanvas"></canvas>
+  <div class="night-toggle">
+    <button onclick="toggleNightMode()">夜间模式切换</button>
+  </div>
+  <div class="container">
+    <img id="mainImg" class="main-img" src="" alt="图片加载中...">
+    <div class="resolution" id="resolution"></div>
+    <button class="download-btn" onclick="downloadImage()">下载壁纸</button>
+    <div class="thumbs" id="thumbContainer"></div>
+  </div>
+  <footer>
+    <span id="dateTime"></span>
+  </footer>
+  <audio id="bgMusic" autoplay loop></audio>
+  <script>
+    const API_URL = "https://api.18xo.eu.org/random?type=img";
+    const mainImg = document.getElementById("mainImg");
+    const resolutionDisplay = document.getElementById("resolution");
+    const thumbContainer = document.getElementById("thumbContainer");
+    const bgMusic = document.getElementById("bgMusic");
+    const history = [];
+    let currentIndex = -1;
+
+    function updateResolution(img) {
+      resolutionDisplay.textContent = `分辨率: ${img.naturalWidth} x ${img.naturalHeight}`;
+    }
+
+    function fetchImage() {
+      fetch(API_URL)
+        .then(res => res.blob())
+        .then(blob => {
+          const url = URL.createObjectURL(blob);
+          showImage(url);
+          addThumbnail(url);
+        });
+    }
+
+    function showImage(url) {
+      currentIndex = history.length;
+      history.push(url);
+      mainImg.src = url;
+      mainImg.onload = () => updateResolution(mainImg);
+      highlightThumbnail(currentIndex);
+    }
+
+    function addThumbnail(url) {
+      if (history.length > 14) {
+        history.shift();
+        thumbContainer.removeChild(thumbContainer.firstChild);
+        currentIndex--;
+      }
+      const img = document.createElement("img");
+      img.src = url;
+      img.addEventListener("click", () => {
+        mainImg.src = url;
+        currentIndex = history.indexOf(url);
+        mainImg.onload = () => updateResolution(mainImg);
+        highlightThumbnail(currentIndex);
+      });
+      img.addEventListener("dblclick", () => {
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "wallpaper.jpg";
+        link.click();
+      });
+      thumbContainer.appendChild(img);
+    }
+
+    function highlightThumbnail(index) {
+      const thumbs = thumbContainer.querySelectorAll("img");
+      thumbs.forEach((img, i) => {
+        img.classList.toggle("active", i === index);
+      });
+    }
+
+    function downloadImage() {
+      const link = document.createElement("a");
+      link.href = mainImg.src;
+      link.download = "wallpaper.jpg";
+      link.click();
+    }
+
+    function updateDateTime() {
+      const now = new Date();
+      document.getElementById("dateTime").textContent =
+        now.toLocaleDateString() + " " + now.toLocaleTimeString();
+    }
+
+    function toggleNightMode() {
+      document.body.classList.toggle("dark");
+    }
+
+    // 背景音乐
+    bgMusic.src = "https://tc.cecily.eu.org/file/1748193433058_石进-夜的钢琴曲五 (钢琴曲)-《非诚勿扰2》电影插曲.flac"; // 替换为你自己的音乐链接
+    bgMusic.volume = 0.6;
+    bgMusic.addEventListener("play", () => {
+      bgMusic.animate([{volume: 0}, {volume: 0.6}], {duration: 2000, fill: 'forwards'});
+    });
+
+    // 樱花背景动画
+    const canvas = document.getElementById("bgCanvas");
+    const ctx = canvas.getContext("2d");
+    let petals = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function createPetal() {
+      return {
+        x: Math.random() * canvas.width,
+        y: -20,
+        r: 5 + Math.random() * 5,
+        speed: 1 + Math.random() * 2,
+        drift: Math.random() * 2 - 1,
+        opacity: 0.5 + Math.random() * 0.5
+      };
+    }
+
+    function drawPetal(p) {
+      ctx.beginPath();
+      ctx.fillStyle = `rgba(255,182,193,${p.opacity})`;
+      ctx.ellipse(p.x, p.y, p.r, p.r * 0.6, Math.PI / 4, 0, 2 * Math.PI);
+      ctx.fill();
+    }
+
+    function animateSakura() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (petals.length < 100) {
+        petals.push(createPetal());
+      }
+      for (let i = 0; i < petals.length; i++) {
+        let p = petals[i];
+        p.y += p.speed;
+        p.x += p.drift;
+        if (p.y > canvas.height || p.x < 0 || p.x > canvas.width) {
+          petals[i] = createPetal();
+        }
+        drawPetal(p);
+      }
+      requestAnimationFrame(animateSakura);
+    }
+
+    animateSakura();
+
+    // 初始化与轮播
+    fetchImage();
+    setInterval(fetchImage, 5000);
+    setInterval(updateDateTime, 1000);
+  </script>
+</body>
+</html>
