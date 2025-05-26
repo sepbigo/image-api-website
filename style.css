@@ -57,12 +57,16 @@ body.dark header h2 {
   height: auto;
   display: block;
   border-radius: 12px;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, opacity 0.5s ease;
   cursor: zoom-in;
+  opacity: 0;
 }
 #main-image.zoomed {
   transform: scale(2);
   cursor: zoom-out;
+}
+#main-image.loaded {
+  opacity: 1;
 }
 
 .cache-bar {
@@ -93,11 +97,16 @@ body.dark .download-tip {
   color: #aaa;
 }
 
+.thumbs-container-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
 .thumbs-container {
   display: flex;
   gap: 8px;
   overflow-x: auto;
-  margin-bottom: 16px;
   padding-bottom: 5px;
   scrollbar-width: none;
 }
@@ -122,6 +131,7 @@ body.dark .download-tip {
   gap: 12px;
   margin-bottom: 8px;
   flex-wrap: wrap;
+  justify-content: center;
 }
 .btn {
   padding: 10px 20px;
@@ -138,6 +148,15 @@ body.dark .download-tip {
 }
 .btn:focus {
   outline: none;
+}
+.btn:hover {
+  opacity: 0.9;
+}
+.nav-btn {
+  padding: 6px 12px;
+  font-size: 1.2rem;
+  background: #ccc;
+  color: #333;
 }
 
 .info-bottom {
@@ -161,16 +180,25 @@ body.dark footer {
   color: #666;
 }
 
-/* 移动端优化 */
-@media (max-width: 600px) {
+/* 响应式优化 */
+@media (max-width: 768px) {
   header h1 {
-    font-size: 1.8rem;
+    font-size: 2rem;
+  }
+  .btn {
+    padding: 8px 14px;
+    font-size: 0.85rem;
+  }
+}
+@media (max-width: 480px) {
+  header h1 {
+    font-size: 1.6rem;
   }
   header h2 {
     font-size: 0.9rem;
   }
   .btn {
-    padding: 8px 14px;
+    padding: 6px 12px;
     font-size: 0.8rem;
   }
   .thumbs-container img {
