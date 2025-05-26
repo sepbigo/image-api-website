@@ -1,4 +1,3 @@
-/* 字体与基础设置 */
 body {
   margin: 0;
   font-family: 'Noto Sans SC', sans-serif;
@@ -12,7 +11,6 @@ body.dark {
   color: #f0f0f0;
 }
 
-/* 页面容器 */
 .container {
   text-align: center;
   padding: 20px;
@@ -58,7 +56,6 @@ h1 {
   transform: scale(1.05);
 }
 
-/* 缩略图样式 */
 .thumbs {
   display: flex;
   flex-wrap: wrap;
@@ -79,7 +76,6 @@ h1 {
   border: 2px solid #00f;
 }
 
-/* 夜间模式切换按钮 */
 .night-toggle {
   position: fixed;
   top: 10px;
@@ -100,7 +96,6 @@ h1 {
   opacity: 0.9;
 }
 
-/* 页脚样式 */
 footer {
   text-align: center;
   padding: 20px 0 10px;
@@ -115,7 +110,6 @@ footer .copyright {
   font-size: 13px;
 }
 
-/* 樱花背景 */
 canvas#bgCanvas {
   position: fixed;
   top: 0;
