@@ -10,51 +10,45 @@ function updateResolution(img) {
   resolutionDisplay.textContent = `分辨率: ${img.naturalWidth} x ${img.naturalHeight}`;
 }
 
-function fetchImage() {
-  fetch(API_URL)
-    .then(res => res.blob())
-    .then(blob => {
-      const url = URL.createObjectURL(blob);
-      showImage(url);
-      addThumbnail(url);
-    });
-}
+let musicPlaying = true;
+let imageHistory = [];
 
-function showImage(url) {
-  currentIndex = history.length;
-  history.push(url);
-  mainImg.src = url;
-  mainImg.onload = () => updateResolution(mainImg);
-  highlightThumbnail(currentIndex);
-}
-
-function addThumbnail(url) {
-  if (history.length > 14) {
-    history.shift();
-    thumbContainer.removeChild(thumbContainer.firstChild);
-    currentIndex--;
-  }
-  const img = document.createElement("img");
+function loadNewImage() {
+  const url = "https://api.18xo.eu.org/random?type=img&t=" + Date.now();
   img.src = url;
-  img.addEventListener("click", () => {
-    mainImg.src = url;
-    currentIndex = history.indexOf(url);
-    mainImg.onload = () => updateResolution(mainImg);
-    highlightThumbnail(currentIndex);
-  });
-  img.addEventListener("dblclick", () => {
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "wallpaper.jpg";
-    link.click();
-  });
-  thumbContainer.appendChild(img);
+  img.dataset.src = url;
+
+  imageHistory.unshift(url);
+  if (imageHistory.length > 6) imageHistory.pop();
 }
 
-function highlightThumbnail(index) {
-  const thumbs = thumbContainer.querySelectorAll("img");
-  thumbs.forEach((img, i) => {
-    img.classList.toggle("active", i === index);
+function renderThumbnails() {
+  thumbnailContainer.innerHTML = '';
+  imageHistory.forEach((url, index) => {
+    if (index === 0) return; // 当前显示的主图不重复显示为缩略图
+    const thumb = document.createElement("img");
+    thumb.src = url;
+
+    // 点击：切换主图
+    thumb.onclick = () => {
+      img.src = url;
+      img.dataset.src = url;
+    };
+
+    // 双击：下载原图
+    thumb.ondblclick = () => {
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "wallpaper.jpg";
+      link.click();
+    };
+
+    // 高亮当前图
+    if (url === img.dataset.src) {
+      thumb.classList.add("active");
+    }
+
+    thumbnailContainer.appendChild(thumb);
   });
 }
 
