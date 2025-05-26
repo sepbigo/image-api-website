@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let history = JSON.parse(localStorage.getItem("galleryHistory") || "[]");
 
+  // 背景音乐播放
   audio.volume = 0.5;
   audio.play().catch(() => {});
 
@@ -27,13 +28,15 @@ document.addEventListener("DOMContentLoaded", () => {
   clearCacheBtn.onclick = () => {
     localStorage.removeItem("galleryHistory");
     history = [];
-    renderThumbs();
+    thumbs.innerHTML = "";
   };
 
+  // 获取 IP
   fetch("https://api.ipify.org?format=json")
     .then(r => r.json())
     .then(d => ipEl.textContent = d.ip);
 
+  // 更新时间
   function updateTime() {
     timeEl.textContent = new Date().toLocaleString();
   }
@@ -47,51 +50,53 @@ document.addEventListener("DOMContentLoaded", () => {
     return `image_${timestamp}${ext}`;
   }
 
-  function loadNewImage() {
-    fetch(API_URL)
-      .then(res => res.url)
-      .then(url => {
-        mainImg.classList.remove("loaded", "zoomed");
-        mainImg.onload = () => {
-          mainImg.classList.add("loaded");
-          resEl.textContent = `${mainImg.naturalWidth} x ${mainImg.naturalHeight}`;
-        };
-        mainImg.src = url;
-        dlBtn.href = url;
-        dlBtn.setAttribute("download", generateFileName(url));
-        history.unshift(url);
-        history = history.slice(0, 20);
-        localStorage.setItem("galleryHistory", JSON.stringify(history));
-        renderThumbs();
-      });
+  function renderThumbs() {
+    thumbs.innerHTML = "";
+    history.forEach(src => {
+      const t = document.createElement("img");
+      t.src = src;
+      t.loading = "lazy";
+      t.onclick = () => updateMain(src);
+      t.ondblclick = () => {
+        const link = document.createElement("a");
+        link.href = src;
+        link.download = generateFileName(src);
+        link.click();
+      };
+      if (src === mainImg.src) t.classList.add("active");
+      thumbs.appendChild(t);
+    });
+  }
+
+  function updateMain(src) {
+    mainImg.src = src;
+    dlBtn.href = src;
+    dlBtn.download = generateFileName(src);
+    mainImg.onload = () => {
+      resEl.textContent = `${mainImg.naturalWidth}×${mainImg.naturalHeight}`;
+      renderThumbs();
+    };
   }
 
   mainImg.onclick = () => {
     mainImg.classList.toggle("zoomed");
   };
 
-  function renderThumbs() {
-    thumbs.innerHTML = "";
-    history.forEach((url, i) => {
-      const img = document.createElement("img");
-      img.src = url;
-      img.className = mainImg.src === url ? "active" : "";
-      img.loading = "lazy";
-      img.onclick = () => {
-        mainImg.src = url;
-        dlBtn.href = url;
-        resEl.textContent = "--";
-      };
-      img.ondblclick = () => {
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = generateFileName(url);
-        a.click();
-      };
-      thumbs.appendChild(img);
-    });
+  function loadImage() {
+    const img = new Image();
+    img.onload = () => {
+      history.push(img.src);
+      if (history.length > 5) history.shift();
+      localStorage.setItem("galleryHistory", JSON.stringify(history));
+      updateMain(img.src);
+    };
+    img.src = API_URL + "&_=" + Date.now();
   }
 
-  loadNewImage();
-  setInterval(loadNewImage, 5000);
+  if (history.length) {
+    updateMain(history[history.length - 1]);
+  } else {
+    loadImage();
+  }
+  setInterval(loadImage, 5000);
 });
