@@ -1,105 +1,119 @@
-const mainImage = document.getElementById("mainImage");
-const loading = document.getElementById("loading");
-const info = document.getElementById("info");
-const downloadBtn = document.getElementById("downloadBtn");
-const thumbnailsContainer = document.getElementById("thumbnails");
-const modeToggle = document.getElementById("modeToggle");
-const refreshBtn = document.getElementById("refreshBtn");
-const visitCountElem = document.getElementById("visitCount");
+document.addEventListener("DOMContentLoaded", () => {
+  const API_URL = "https://api.18xo.eu.org/random?type=img";
+  const NAMESPACE = "phantom-gallery";
+  const KEY = "global-visits";
 
-let historyImages = [];
-let currentIndex = 0;
-let autoSwitchTimer = null;
-let zoomed = false;
+  const mainImg = document.getElementById("main-image");
+  const thumbsContainer = document.querySelector(".thumbs-container");
+  const themeBtn = document.getElementById("toggle-theme");
+  const fsBtn = document.getElementById("fullscreen-btn");
+  const downloadBtn = document.getElementById("download-btn");
+  const resEl = document.getElementById("resolution");
+  const countEl = document.getElementById("visit-count");
+  const ipEl = document.getElementById("client-ip");
+  const timeEl = document.getElementById("current-time");
+  const audio = document.getElementById("bg-music");
+  const sakuraContainer = document.getElementById("sakura-container");
 
-// 获取图片地址
-async function getImageUrl() {
-  return "https://api.18xo.eu.org/random?type=img";
-}
+  const history = [];
 
-// 加载图片（带淡入动画和历史更新）
-async function loadMainImage(url, updateHistory = true) {
-  loading.style.display = "block";
-  mainImage.classList.remove("show", "zoomed");
-  zoomed = false;
-
-  mainImage.style.opacity = 0; // 预先隐藏避免闪烁
-  mainImage.src = "";
-
-  // 小延迟避免切换太快导致闪烁
-  await new Promise(resolve => setTimeout(resolve, 50));
-
-  mainImage.src = url;
-  downloadBtn.href = url;
-
-  return new Promise((resolve) => {
-    mainImage.onload = () => {
-      loading.style.display = "none";
-      info.textContent = `分辨率：${mainImage.naturalWidth} × ${mainImage.naturalHeight}`;
-      mainImage.classList.add("show");
-      resolve();
-    };
-  }).then(() => {
-    if (updateHistory) {
-      if (!historyImages.includes(url)) {
-        historyImages.push(url);
-        if (historyImages.length > 10) historyImages.shift();
-      } else {
-        historyImages = historyImages.filter(u => u !== url);
-        historyImages.push(url);
-      }
-      renderThumbnails();
-    }
+  // 背景音乐设置
+  audio.volume = 0.5; // 50% 音量
+  audio.play().catch(() => {
+    // 某些浏览器需用户交互才能播放，忽略错误
   });
-}
 
-// 渲染缩略图
-function renderThumbnails() {
-  thumbnailsContainer.innerHTML = "";
-  historyImages.forEach((url, i) => {
-    const thumb = document.createElement("img");
-    thumb.src = url;
-    if (i === historyImages.length - 1) {
-      thumb.classList.add("active");
-      currentIndex = i;
+  // 生成樱花花瓣
+  function createPetals(count = 40) {
+    for (let i = 0; i < count; i++) {
+      const petal = document.createElement("div");
+      petal.classList.add("petal");
+      petal.style.left = Math.random() * 100 + "%";
+      const duration = 5 + Math.random() * 5; // 5–10s
+      const delay = Math.random() * 5;       // 0–5s
+      petal.style.animationDuration = `${duration}s`;
+      petal.style.animationDelay = `${delay}s`;
+      sakuraContainer.appendChild(petal);
     }
-    thumb.addEventListener("click", async () => {
-      if (currentIndex === i) return;
-      currentIndex = i;
-      await loadMainImage(url, false);
-      highlightThumbnail(i);
-      resetAutoSwitch();
+  }
+  createPetals();
+
+  // 初始化/切换主题
+  (function initTheme() {
+    if (localStorage.getItem("lightMode") === "true") document.body.classList.add("light");
+  })();
+  themeBtn.onclick = () => {
+    const light = document.body.classList.toggle("light");
+    localStorage.setItem("lightMode", light);
+  };
+
+  // 全屏预览
+  fsBtn.onclick = () => {
+    document.fullscreenElement
+      ? document.exitFullscreen()
+      : document.documentElement.requestFullscreen();
+  };
+
+  // 获取访问统计
+  fetch(`https://api.countapi.xyz/hit/${NAMESPACE}/${KEY}`)
+    .then(r => r.json()).then(d => { countEl.textContent = d.value; });
+
+  // 获取客户端 IP
+  fetch("https://api.ipify.org?format=json")
+    .then(r => r.json()).then(d => { ipEl.textContent = d.ip; });
+
+  // 实时更新时间
+  function updateTime() {
+    timeEl.textContent = new Date().toLocaleString();
+  }
+  setInterval(updateTime, 1000);
+  updateTime();
+
+  // 加载图片完成后更新分辨率和下载链接
+  mainImg.onload = () => {
+    resEl.textContent = `${mainImg.naturalWidth}×${mainImg.naturalHeight}`;
+    downloadBtn.href = mainImg.src;
+    // 重新触发弹跳动画
+    mainImg.classList.remove("pop-in");
+    void mainImg.offsetWidth;
+    mainImg.classList.add("pop-in");
+  };
+
+  // 更新主图及高亮缩略图
+  function updateDisplay(url) {
+    mainImg.classList.remove("zoomed");
+    mainImg.src = url;
+    document.querySelectorAll(".thumbs-container img")
+      .forEach(img => img.classList.toggle("active", img.src === url));
+  }
+
+  // 刷新缩略图列表
+  function refreshThumbs() {
+    thumbsContainer.innerHTML = "";
+    history.forEach(u => {
+      const t = document.createElement("img");
+      t.src = u;
+      t.onclick = () => updateDisplay(u);
+      thumbsContainer.appendChild(t);
     });
-    thumbnailsContainer.appendChild(thumb);
-  });
-}
+    if (history.length) updateDisplay(history[history.length - 1]);
+  }
 
-// 高亮缩略图
-function highlightThumbnail(index) {
-  const thumbs = thumbnailsContainer.querySelectorAll("img");
-  thumbs.forEach((img, i) => {
-    img.classList.toggle("active", i === index);
-  });
-}
+  // 加载新图并维护历史
+  function loadImage() {
+    const img = new Image();
+    img.onload = () => {
+      history.push(img.src);
+      if (history.length > 5) history.shift();
+      refreshThumbs();
+    };
+    img.src = API_URL + "&_=" + Date.now();
+  }
 
-// 自动轮播
-function startAutoSwitch() {
-  if (autoSwitchTimer) clearInterval(autoSwitchTimer);
-  autoSwitchTimer = setInterval(async () => {
-    currentIndex++;
-    if (currentIndex >= historyImages.length) {
-      // 请求新图
-      const url = await getImageUrl();
-      await loadMainImage(url);
-      currentIndex = historyImages.length - 1;
-    } else {
-      // 切换历史图
-      await loadMainImage(historyImages[currentIndex], false);
-    }
-    highlightThumbnail(currentIndex);
-  }, 5000);
-}
+  // 点击主图放大/缩小
+  mainImg.onclick = () => mainImg.classList.toggle("zoomed");
 
-// 重置轮播计时
-function resetAutoSwitch() {
-  if (autoSwitchTimer) clearInterval(autoSwitchTimer
+  // 启动自动轮播
+  loadImage();
+  setInterval(loadImage, 5000);
+});
