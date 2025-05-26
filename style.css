@@ -48,22 +48,21 @@ body.dark header h2 {
   width: 100%;
   max-width: 100%;
   margin-bottom: 8px;
+  background: #000;
+  border-radius: 12px;
+  overflow: hidden;
 }
 #main-image {
   width: 100%;
   height: auto;
   display: block;
   border-radius: 12px;
-  transition: transform 0.3s ease, opacity 0.5s ease;
+  transition: transform 0.3s ease;
   cursor: zoom-in;
-  opacity: 0;
 }
 #main-image.zoomed {
   transform: scale(2);
   cursor: zoom-out;
-}
-#main-image.loaded {
-  opacity: 1;
 }
 
 .cache-bar {
@@ -96,10 +95,14 @@ body.dark .download-tip {
 
 .thumbs-container {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  justify-content: center;
+  gap: 8px;
+  overflow-x: auto;
   margin-bottom: 16px;
+  padding-bottom: 5px;
+  scrollbar-width: none;
+}
+.thumbs-container::-webkit-scrollbar {
+  display: none;
 }
 .thumbs-container img {
   width: 120px;
