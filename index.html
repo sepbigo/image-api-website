@@ -3,28 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>高清壁纸轮播站</title>
+  <title>春田花花高清壁纸轮播站</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <!-- 樱花背景容器 -->
   <div id="sakura-container"></div>
 
-  <!-- 标题区域 -->
   <header class="header">
-    <h1>高清壁纸轮播站</h1>
+    <h1>春田花花高清壁纸轮播站</h1>
     <p class="subtitle">每 5 秒自动切换，让灵感不断更新</p>
     <div class="header-buttons">
-      <button id="modeToggle">🌙 夜间模式</button>
-      <button id="refreshBtn">🔄 刷新图片</button>
+      <button id="modeToggle">夜间模式</button>
+      <button id="refreshBtn">刷新图片</button>
     </div>
   </header>
 
-  <!-- 浏览次数 -->
   <div class="visit-count" id="visitCount">浏览次数：0</div>
 
-  <!-- 主图容器 -->
   <div class="container">
     <div id="loading" class="loading">加载中...</div>
     <img id="mainImage" src="" alt="加载中..." />
@@ -32,13 +28,12 @@
     <a id="downloadBtn" href="#" download class="download-btn">下载图片</a>
   </div>
 
-  <!-- 缩略图导航 -->
   <div class="thumbnails" id="thumbnails"></div>
 
-  <!-- 页脚信息栏 -->
   <footer class="footer">
     <div id="datetime">时间加载中...</div>
     <div id="ip">IP 加载中...</div>
+    <div class="copyright">© 2025 春田花花疯人院 | 版权所有</div>
   </footer>
 
   <script src="script.js"></script>
