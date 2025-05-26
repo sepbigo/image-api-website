@@ -3,49 +3,44 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>春田花花高清壁纸</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <title>春田花花高清壁纸站</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Noto+Sans+SC&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body oncontextmenu="return false;">
-  <!-- 背景音乐 -->
-  <audio id="bg-music" src="music.flac" autoplay loop></audio>
+  <audio id="bg-music" src="music.mp3" autoplay loop></audio>
 
-  <!-- 标题 -->
   <header>
     <h1 class="gradient-text">春田花花高清壁纸</h1>
     <h2>每一次刷新，都是一场新的邂逅</h2>
   </header>
 
-  <!-- 主图展示 -->
   <div class="main-container">
     <img id="main-image" src="" alt="加载中..." />
   </div>
 
-  <!-- 分辨率 & 缓存按钮 -->
   <div class="cache-bar">
     <span>分辨率: <strong id="resolution">--</strong></span>
     <button id="clear-cache" class="btn small">清除缓存</button>
   </div>
+  <div class="download-tip">双击缩略图即可下载原图</div>
 
-  <!-- 缩略图 -->
   <div class="thumbs-container"></div>
 
-  <!-- 控制按钮 -->
   <div class="controls">
     <button id="toggle-theme" class="btn">夜间模式</button>
     <button id="fullscreen-btn" class="btn">全屏预览</button>
-    <a id="download-btn" href="#" download="image.jpg" class="btn">下载图片</a>
+    <a id="download-btn" href="#" class="btn" download>下载图片</a>
   </div>
 
-  <!-- IP与时间 -->
   <div class="info-bottom">
     <span>IP: <strong id="client-ip">--</strong></span>
     <span>时间: <strong id="current-time">--</strong></span>
   </div>
 
-  <!-- 页脚 -->
-  <footer><p>图片来源：<a href="https://api.18xo.eu.org" target="_blank">春田花花疯人院随机图片API</a></p></footer>
+  <footer>&copy; 2025丨春田花花疯人院丨版权所有
+  <p>图片来源：<a href="https://api.18xo.eu.org" target="_blank">春田花花疯人院随机图片API</a></p>
+  </footer>
 
   <script src="script.js"></script>
 </body>
