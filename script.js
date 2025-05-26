@@ -1,7 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
   const API_URL = "https://api.18xo.eu.org/random?type=img";
   const mainImg = document.getElementById("main-image");
-  const spinner = document.getElementById("spinner");
   const thumbs = document.querySelector(".thumbs-container");
   const themeBtn = document.getElementById("toggle-theme");
   const fsBtn = document.getElementById("fullscreen-btn");
@@ -20,9 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
   audio.play().catch(() => {});
 
   // 切换夜间模式
-  themeBtn.onclick = () => {
-    document.body.classList.toggle("dark");
-  };
+  themeBtn.onclick = () => document.body.classList.toggle("dark");
 
   // 全屏预览
   fsBtn.onclick = () => {
@@ -64,17 +61,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 更新主图
   function updateMain(src) {
-    spinner.style.display = "block";
-    mainImg.style.opacity = 0;
     mainImg.src = src;
     dlBtn.href = src;
     mainImg.onload = () => {
-      spinner.style.display = "none";
-      mainImg.style.opacity = 1;
       resEl.textContent = `${mainImg.naturalWidth}×${mainImg.naturalHeight}`;
       renderThumbs();
     };
   }
+
+  // 点击主图缩放
+  mainImg.onclick = () => {
+    mainImg.classList.toggle("zoomed");
+  };
 
   // 加载新图
   function loadImage() {
