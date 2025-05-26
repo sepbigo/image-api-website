@@ -75,13 +75,13 @@ function toggleNightMode() {
   document.body.classList.toggle("dark");
 }
 
-// 初始化背景音乐
-bgMusic.src = "https://tc.cecily.eu.org/file/1748193433058_石进-夜的钢琴曲五 (钢琴曲)-《非诚勿扰2》电影插曲.flac"; // 替换为你自己的音乐链接
+// 背景音乐
+bgMusic.src = "https://tc.cecily.eu.org/file/1748193433058_石进-夜的钢琴曲五 (钢琴曲)-《非诚勿扰2》电影插曲.flac"; // 请替换为你自己的音乐链接
 bgMusic.volume = 0.6;
 bgMusic.addEventListener("play", () => {
   bgMusic.animate([{ volume: 0 }, { volume: 0.6 }], {
     duration: 2000,
-    fill: "forwards",
+    fill: "forwards"
   });
 });
 
