@@ -10,8 +10,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const timeEl = document.getElementById("current-time");
   const resEl = document.getElementById("resolution");
   const audio = document.getElementById("bg-music");
+  const prevPageBtn = document.getElementById("prev-page");
+  const nextPageBtn = document.getElementById("next-page");
 
   let history = JSON.parse(localStorage.getItem("galleryHistory") || "[]");
+  const thumbsPerPage = 5;
+  let currentPage = 0;
 
   // 背景音乐播放
   audio.volume = 0.5;
@@ -28,7 +32,8 @@ document.addEventListener("DOMContentLoaded", () => {
   clearCacheBtn.onclick = () => {
     localStorage.removeItem("galleryHistory");
     history = [];
-    thumbs.innerHTML = "";
+    currentPage = 0;
+    renderThumbs();
   };
 
   // 获取 IP
@@ -52,51 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function renderThumbs() {
     thumbs.innerHTML = "";
-    history.forEach(src => {
-      const t = document.createElement("img");
-      t.src = src;
-      t.loading = "lazy";
-      t.onclick = () => updateMain(src);
-      t.ondblclick = () => {
-        const link = document.createElement("a");
-        link.href = src;
-        link.download = generateFileName(src);
-        link.click();
-      };
-      if (src === mainImg.src) t.classList.add("active");
-      thumbs.appendChild(t);
-    });
-  }
-
-  function updateMain(src) {
-    mainImg.src = src;
-    dlBtn.href = src;
-    dlBtn.download = generateFileName(src);
-    mainImg.onload = () => {
-      resEl.textContent = `${mainImg.naturalWidth}×${mainImg.naturalHeight}`;
-      renderThumbs();
-    };
-  }
-
-  mainImg.onclick = () => {
-    mainImg.classList.toggle("zoomed");
-  };
-
-  function loadImage() {
-    const img = new Image();
-    img.onload = () => {
-      history.push(img.src);
-      if (history.length > 5) history.shift();
-      localStorage.setItem("galleryHistory", JSON.stringify(history));
-      updateMain(img.src);
-    };
-    img.src = API_URL + "&_=" + Date.now();
-  }
-
-  if (history.length) {
-    updateMain(history[history.length - 1]);
-  } else {
-    loadImage();
-  }
-  setInterval(loadImage, 5000);
-});
+    const start = currentPage * thumbsPerPage;
+    const end = start + thumbsPerPage;
+    const pageItems =
+::contentReference[oaicite:4]{index=4}
