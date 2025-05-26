@@ -1,9 +1,18 @@
+/* 重置和基础 */
+
+* {
+  box-sizing: border-box;
+}
+
 body {
   font-family: Arial, sans-serif;
   margin: 0;
   background: #f2f2f2;
   color: #333;
   transition: background 0.3s, color 0.3s;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .dark {
@@ -11,14 +20,18 @@ body {
   color: #ddd;
 }
 
+/* header */
+
 .header {
   text-align: center;
   padding: 20px;
+  flex-shrink: 0;
 }
 
 .subtitle {
   font-size: 14px;
   color: #666;
+  margin-top: 4px;
 }
 
 .header-buttons {
@@ -33,52 +46,100 @@ button {
   background-color: #4caf50;
   color: white;
   border-radius: 4px;
+  font-size: 14px;
+  transition: background-color 0.3s;
 }
 
 button:hover {
   background-color: #45a049;
 }
 
+/* 主内容容器 */
+
 .container {
-  max-width: 90%;
-  margin: auto;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 10px;
+  flex-grow: 1;
   text-align: center;
   position: relative;
 }
 
-img {
-  max-width: 100%;
-  max-height: 80vh;
-  transition: transform 0.3s ease;
-  cursor: pointer;
+/* 1920x1080 固定比例容器 */
+
+.image-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  /* 16:9 宽高比 */
+  padding-top: 56.25%;
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  background-color: #000;
 }
 
-.zoomed {
-  transform: scale(1.5);
+/* 图片自适应，居中显示，平滑过渡 */
+
+#mainImage {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  max-width: 100%;
+  max-height: 100%;
+  transform: translate(-50%, -50%);
+  transition: transform 0.3s ease, opacity 0.4s ease;
+  cursor: pointer;
+  user-select: none;
+  opacity: 0;
+  border-radius: 12px;
+  will-change: transform, opacity;
+  object-fit: contain;
 }
+
+/* 图片显示时淡入 */
+
+#mainImage.show {
+  opacity: 1;
+}
+
+/* 缩放效果 */
+
+.zoomed {
+  transform: translate(-50%, -50%) scale(1.5);
+}
+
+/* Loading 提示 */
 
 .loading {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 20px;
-  color: #666;
+  font-size: 22px;
+  color: #888;
+  user-select: none;
 }
 
+/* 图片信息和按钮 */
+
 .info {
-  margin: 10px 0;
-  font-size: 14px;
+  margin-top: 12px;
+  font-size: 15px;
+  color: #555;
 }
 
 .download-btn {
   display: inline-block;
   margin-top: 10px;
-  padding: 8px 14px;
+  padding: 10px 20px;
   background: #2196f3;
   color: #fff;
   border-radius: 4px;
   text-decoration: none;
+  font-weight: 600;
+  transition: background-color 0.3s;
 }
 
 .download-btn:hover {
@@ -86,46 +147,60 @@ img {
 }
 
 .visit-count {
-  margin-top: 8px;
+  margin-top: 6px;
   font-size: 13px;
   color: #999;
 }
 
+/* 缩略图导航 - 瀑布流布局 */
+
 .thumbnails {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  margin: 20px auto;
-  gap: 8px;
+  max-width: 1200px;
+  margin: 20px auto 40px;
+  padding: 0 10px;
+  column-width: 120px;
+  column-gap: 12px;
 }
 
 .thumbnails img {
-  width: 80px;
-  height: 45px;
-  object-fit: cover;
-  border: 2px solid transparent;
+  width: 100%;
+  margin-bottom: 12px;
+  border-radius: 6px;
   cursor: pointer;
-  transition: border 0.2s;
+  border: 2px solid transparent;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  object-fit: cover;    /* 裁剪模式 */
+  aspect-ratio: 16 / 9; /* 维持16:9比例 */
+  display: block;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  user-select: none;
 }
 
 .thumbnails img.active {
-  border: 2px solid #ff5722;
-  box-shadow: 0 0 5px #ff5722;
+  border-color: #ff5722;
+  box-shadow: 0 0 8px 2px #ff5722;
 }
+
+/* footer */
 
 .footer {
   text-align: center;
   font-size: 14px;
-  margin-top: 20px;
-  padding: 10px;
+  padding: 12px 10px;
   color: #888;
+  flex-shrink: 0;
+  border-top: 1px solid #ddd;
+  background-color: #fafafa;
+  user-select: none;
 }
 
-.footer .copyright {
-  margin-top: 8px;
-  font-size: 12px;
+.dark .footer {
+  border-color: #333;
+  background-color: #1a1a1a;
   color: #aaa;
 }
+
+/* 背景动画樱花 */
 
 #sakura-container {
   position: fixed;
@@ -152,5 +227,13 @@ img {
   to {
     transform: translateY(100vh) rotate(360deg);
     opacity: 0;
+  }
+}
+
+/* 响应式调整 */
+
+@media (max-width: 768px) {
+  .thumbnails {
+    column-width: 90px;
   }
 }
