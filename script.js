@@ -10,14 +10,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const timeEl = document.getElementById("current-time");
   const resEl = document.getElementById("resolution");
   const audio = document.getElementById("bg-music");
-  const prevPageBtn = document.getElementById("prev-page");
-  const nextPageBtn = document.getElementById("next-page");
 
   let history = JSON.parse(localStorage.getItem("galleryHistory") || "[]");
-  const thumbsPerPage = 5;
-  let currentPage = 0;
 
-  // 背景音乐播放
   audio.volume = 0.5;
   audio.play().catch(() => {});
 
@@ -32,16 +27,13 @@ document.addEventListener("DOMContentLoaded", () => {
   clearCacheBtn.onclick = () => {
     localStorage.removeItem("galleryHistory");
     history = [];
-    currentPage = 0;
     renderThumbs();
   };
 
-  // 获取 IP
   fetch("https://api.ipify.org?format=json")
     .then(r => r.json())
     .then(d => ipEl.textContent = d.ip);
 
-  // 更新时间
   function updateTime() {
     timeEl.textContent = new Date().toLocaleString();
   }
@@ -55,9 +47,51 @@ document.addEventListener("DOMContentLoaded", () => {
     return `image_${timestamp}${ext}`;
   }
 
+  function loadNewImage() {
+    fetch(API_URL)
+      .then(res => res.url)
+      .then(url => {
+        mainImg.classList.remove("loaded", "zoomed");
+        mainImg.onload = () => {
+          mainImg.classList.add("loaded");
+          resEl.textContent = `${mainImg.naturalWidth} x ${mainImg.naturalHeight}`;
+        };
+        mainImg.src = url;
+        dlBtn.href = url;
+        dlBtn.setAttribute("download", generateFileName(url));
+        history.unshift(url);
+        history = history.slice(0, 20);
+        localStorage.setItem("galleryHistory", JSON.stringify(history));
+        renderThumbs();
+      });
+  }
+
+  mainImg.onclick = () => {
+    mainImg.classList.toggle("zoomed");
+  };
+
   function renderThumbs() {
     thumbs.innerHTML = "";
-    const start = currentPage * thumbsPerPage;
-    const end = start + thumbsPerPage;
-    const
-::contentReference[oaicite:4]{index=4}
+    history.forEach((url, i) => {
+      const img = document.createElement("img");
+      img.src = url;
+      img.className = mainImg.src === url ? "active" : "";
+      img.loading = "lazy";
+      img.onclick = () => {
+        mainImg.src = url;
+        dlBtn.href = url;
+        resEl.textContent = "--";
+      };
+      img.ondblclick = () => {
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = generateFileName(url);
+        a.click();
+      };
+      thumbs.appendChild(img);
+    });
+  }
+
+  loadNewImage();
+  setInterval(loadNewImage, 5000);
+});
