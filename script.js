@@ -7,7 +7,7 @@ const modeToggle = document.getElementById("modeToggle");
 const refreshBtn = document.getElementById("refreshBtn");
 const visitCountElem = document.getElementById("visitCount");
 
-let thumbnails = [];
+let historyImages = [];
 let currentIndex = 0;
 let autoSwitchTimer = null;
 let zoomed = false;
@@ -16,7 +16,7 @@ async function getImageUrl() {
   return "https://api.18xo.eu.org/random?type=img";
 }
 
-async function loadMainImage(url) {
+async function loadMainImage(url, updateHistory = true) {
   loading.style.display = "block";
   mainImage.classList.remove("zoomed");
   zoomed = false;
@@ -27,31 +27,38 @@ async function loadMainImage(url) {
     loading.style.display = "none";
     info.textContent = `分辨率：${mainImage.naturalWidth} × ${mainImage.naturalHeight}`;
   };
+
+  if (updateHistory) {
+    // 新图加入历史
+    if (!historyImages.includes(url)) {
+      historyImages.push(url);
+      // 保持最多10张
+      if (historyImages.length > 10) historyImages.shift();
+    } else {
+      // 如果已有，放到末尾（最新）
+      historyImages = historyImages.filter(u => u !== url);
+      historyImages.push(url);
+    }
+    renderThumbnails();
+  }
 }
 
-async function loadThumbnails() {
-  thumbnails = [];
+function renderThumbnails() {
   thumbnailsContainer.innerHTML = "";
-  for (let i = 0; i < 10; i++) {
-    const url = await getImageUrl();
-    thumbnails.push(url);
-
+  historyImages.forEach((url, i) => {
     const thumb = document.createElement("img");
     thumb.src = url;
+    if (i === historyImages.length - 1) {
+      thumb.classList.add("active");
+      currentIndex = i;
+    }
     thumb.addEventListener("click", () => {
       currentIndex = i;
-      loadMainImage(url);
+      loadMainImage(url, false);
       highlightThumbnail(i);
     });
-    thumb.addEventListener("dblclick", () => {
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "wallpaper.jpg";
-      a.click();
-    });
     thumbnailsContainer.appendChild(thumb);
-  }
-  highlightThumbnail(currentIndex);
+  });
 }
 
 function highlightThumbnail(index) {
@@ -62,19 +69,27 @@ function highlightThumbnail(index) {
 }
 
 function startAutoSwitch() {
-  autoSwitchTimer = setInterval(() => {
-    if (document.querySelector(".container:hover")) return;
-    currentIndex = (currentIndex + 1) % thumbnails.length;
-    loadMainImage(thumbnails[currentIndex]);
+  if (autoSwitchTimer) clearInterval(autoSwitchTimer);
+  autoSwitchTimer = setInterval(async () => {
+    currentIndex++;
+    if (currentIndex >= historyImages.length) {
+      // 新图加载
+      const url = await getImageUrl();
+      await loadMainImage(url);
+      currentIndex = historyImages.length - 1;
+    } else {
+      // 旧图切换
+      loadMainImage(historyImages[currentIndex], false);
+    }
     highlightThumbnail(currentIndex);
   }, 5000);
 }
 
 async function initGallery() {
-  thumbnails = [];
+  historyImages = [];
   currentIndex = 0;
-  await loadThumbnails();
-  loadMainImage(thumbnails[currentIndex]);
+  const firstUrl = await getImageUrl();
+  await loadMainImage(firstUrl);
   startAutoSwitch();
 }
 
@@ -93,19 +108,21 @@ mainImage.addEventListener("click", () => {
 modeToggle.addEventListener("click", () => {
   document.body.classList.toggle("dark");
   const dark = document.body.classList.contains("dark");
-  modeToggle.textContent = dark ? "浅色模式" : "夜间模式";
+  modeToggle.textContent = dark ? "☀️ 浅色模式" : "🌙 夜间模式";
   localStorage.setItem("theme", dark ? "dark" : "light");
 });
 
 refreshBtn.addEventListener("click", async () => {
-  clearInterval(autoSwitchTimer);
-  await initGallery();
+  // 立即加载新图，重置轮播计时
+  const url = await getImageUrl();
+  await loadMainImage(url);
+  startAutoSwitch();
 });
 
 const savedTheme = localStorage.getItem("theme");
 if (savedTheme === "dark") {
   document.body.classList.add("dark");
-  modeToggle.textContent = "浅色模式";
+  modeToggle.textContent = "☀️ 浅色模式";
 }
 
 function updateTime() {
@@ -134,7 +151,6 @@ function createSakura() {
   petal.className = "sakura";
   petal.style.left = `${Math.random() * 100}%`;
   petal.style.animationDuration = `${5 + Math.random() * 5}s`;
-  petal.style.opacity = 0.5;
   document.getElementById("sakura-container").appendChild(petal);
   setTimeout(() => petal.remove(), 10000);
 }
