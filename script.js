@@ -132,7 +132,7 @@ mainImage.addEventListener("click", () => {
 modeToggle.addEventListener("click", () => {
   document.body.classList.toggle("dark");
   const dark = document.body.classList.contains("dark");
-  modeToggle.textContent = dark ? "☀️ 浅色模式" : "🌙 夜间模式";
+  modeToggle.textContent = dark ? "浅色模式" : "夜间模式";
   localStorage.setItem("theme", dark ? "dark" : "light");
 });
 
@@ -147,7 +147,7 @@ refreshBtn.addEventListener("click", async () => {
 const savedTheme = localStorage.getItem("theme");
 if (savedTheme === "dark") {
   document.body.classList.add("dark");
-  modeToggle.textContent = "☀️ 浅色模式";
+  modeToggle.textContent = "浅色模式";
 }
 
 // 更新时间显示
