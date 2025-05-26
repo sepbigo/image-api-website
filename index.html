@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>春田花花高清壁纸站</title>
+  <title>春田花花高清壁纸轮播站</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -11,7 +11,7 @@
   <div id="sakura-container"></div>
 
   <header class="header">
-    <h1>春天花花高清壁纸站</h1>
+    <h1>春田花花高清壁纸轮播站</h1>
     <p class="subtitle">每 5 秒自动切换，让灵感不断更新</p>
     <div class="header-buttons">
       <button id="modeToggle">夜间模式</button>
@@ -19,15 +19,19 @@
     </div>
   </header>
 
-  <div class="container">
+  <main class="container">
     <div id="loading" class="loading">加载中...</div>
-    <img id="mainImage" src="" alt="加载中..." />
+
+    <div class="image-wrapper">
+      <img id="mainImage" src="" alt="加载中..." />
+    </div>
+
     <div id="info" class="info">分辨率：-- x --</div>
     <a id="downloadBtn" href="#" download class="download-btn">下载图片</a>
     <div id="visitCount" class="visit-count">浏览次数：0</div>
-  </div>
+  </main>
 
-  <div class="thumbnails" id="thumbnails"></div>
+  <section class="thumbnails" id="thumbnails"></section>
 
   <footer class="footer">
     <div id="datetime">时间加载中...</div>
