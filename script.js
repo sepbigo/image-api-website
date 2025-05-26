@@ -1,6 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
   const API_URL = "https://api.18xo.eu.org/random?type=img";
-
   const mainImg = document.getElementById("main-image");
   const thumbs = document.querySelector(".thumbs-container");
   const themeBtn = document.getElementById("toggle-theme");
@@ -14,14 +13,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let history = [];
 
-  // —— 背景音乐 & 音量 —— 
+  // 播放背景音乐
   audio.volume = 0.5;
   audio.play().catch(() => {});
 
-  // —— 生成樱花花瓣 —— 
+  // 创建樱花
   function createPetals(n = 40) {
     for (let i = 0; i < n; i++) {
-      let p = document.createElement("div");
+      const p = document.createElement("div");
       p.className = "petal";
       p.style.left = Math.random() * 100 + "%";
       p.style.animationDuration = (5 + Math.random()*5) + "s";
@@ -31,30 +30,31 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   createPetals();
 
-  // —— 切换主题 —— 
+  // 切换夜间模式
   themeBtn.onclick = () => {
     document.body.classList.toggle("dark");
   };
 
-  // —— 全屏预览 —— 
+  // 全屏
   fsBtn.onclick = () => {
     document.fullscreenElement
       ? document.exitFullscreen()
       : document.documentElement.requestFullscreen();
   };
 
-  // —— 实时 IP & 时间 —— 
+  // IP和时间
   fetch("https://api.ipify.org?format=json")
-    .then(r=>r.json()).then(d=> ipEl.textContent = d.ip );
-  function tick() {
+    .then(r => r.json())
+    .then(d => ipEl.textContent = d.ip);
+  function updateTime() {
     timeEl.textContent = new Date().toLocaleString();
   }
-  setInterval(tick, 1000);
-  tick();
+  setInterval(updateTime, 1000);
+  updateTime();
 
-  // —— 加载新图 & 缩略图导航 —— 
+  // 加载图片
   function loadImage() {
-    let img = new Image();
+    const img = new Image();
     img.onload = () => {
       history.push(img.src);
       if (history.length > 5) history.shift();
@@ -63,30 +63,34 @@ document.addEventListener("DOMContentLoaded", () => {
     };
     img.src = API_URL + "&_=" + Date.now();
   }
+
   function renderThumbs() {
     thumbs.innerHTML = "";
     history.forEach(src => {
-      let t = document.createElement("img");
+      const t = document.createElement("img");
       t.src = src;
       t.onclick = () => updateMain(src);
       thumbs.appendChild(t);
     });
   }
+
   function updateMain(src) {
     mainImg.classList.remove("zoomed");
     mainImg.src = src;
     dlBtn.href = src;
-    // 更新分辨率
     mainImg.onload = () => {
       resEl.textContent = `${mainImg.naturalWidth}×${mainImg.naturalHeight}`;
     };
-    // 高亮
     document.querySelectorAll(".thumbs-container img")
-      .forEach(i=> i.classList.toggle("active", i.src===src));
+      .forEach(i => i.classList.toggle("active", i.src === src));
   }
-  mainImg.onclick = () => mainImg.classList.toggle("zoomed");
 
-  // —— 启动自动轮播 —— 
+  // 图片点击缩放
+  mainImg.onclick = () => {
+    mainImg.classList.toggle("zoomed");
+  };
+
+  // 初始加载 + 自动轮播
   loadImage();
   setInterval(loadImage, 5000);
 });
