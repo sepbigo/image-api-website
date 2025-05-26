@@ -23,9 +23,11 @@ async function loadMainImage(url, updateHistory = true) {
   mainImage.classList.remove("show", "zoomed");
   zoomed = false;
 
-  // 先移除图片src，防止快速切换时闪烁
+  mainImage.style.opacity = 0; // 预先隐藏避免闪烁
   mainImage.src = "";
-  await new Promise(resolve => setTimeout(resolve, 50)); // 小延迟防止无动画
+
+  // 小延迟避免切换太快导致闪烁
+  await new Promise(resolve => setTimeout(resolve, 50));
 
   mainImage.src = url;
   downloadBtn.href = url;
@@ -43,7 +45,6 @@ async function loadMainImage(url, updateHistory = true) {
         historyImages.push(url);
         if (historyImages.length > 10) historyImages.shift();
       } else {
-        // 已存在就放到尾部
         historyImages = historyImages.filter(u => u !== url);
         historyImages.push(url);
       }
@@ -101,89 +102,4 @@ function startAutoSwitch() {
 
 // 重置轮播计时
 function resetAutoSwitch() {
-  if (autoSwitchTimer) clearInterval(autoSwitchTimer);
-  startAutoSwitch();
-}
-
-// 初始化画廊
-async function initGallery() {
-  historyImages = [];
-  currentIndex = 0;
-  const firstUrl = await getImageUrl();
-  await loadMainImage(firstUrl);
-  startAutoSwitch();
-}
-
-// 主图双击下载
-mainImage.addEventListener("dblclick", () => {
-  const a = document.createElement("a");
-  a.href = mainImage.src;
-  a.download = "wallpaper.jpg";
-  a.click();
-});
-
-// 主图点击缩放
-mainImage.addEventListener("click", () => {
-  zoomed = !zoomed;
-  mainImage.classList.toggle("zoomed", zoomed);
-});
-
-// 夜间/浅色模式切换
-modeToggle.addEventListener("click", () => {
-  document.body.classList.toggle("dark");
-  const dark = document.body.classList.contains("dark");
-  modeToggle.textContent = dark ? "浅色模式" : "夜间模式";
-  localStorage.setItem("theme", dark ? "dark" : "light");
-});
-
-// 刷新按钮立即切换图片
-refreshBtn.addEventListener("click", async () => {
-  const url = await getImageUrl();
-  await loadMainImage(url);
-  resetAutoSwitch();
-});
-
-// 读取主题偏好
-const savedTheme = localStorage.getItem("theme");
-if (savedTheme === "dark") {
-  document.body.classList.add("dark");
-  modeToggle.textContent = "浅色模式";
-}
-
-// 更新时间显示
-function updateTime() {
-  const now = new Date();
-  document.getElementById("datetime").textContent = `当前时间：${now.toLocaleString()}`;
-}
-setInterval(updateTime, 1000);
-updateTime();
-
-// 获取IP地址
-fetch("https://api.ipify.org?format=json")
-  .then(res => res.json())
-  .then(data => {
-    document.getElementById("ip").textContent = `你的IP：${data.ip}`;
-  })
-  .catch(() => {
-    document.getElementById("ip").textContent = "无法获取IP";
-  });
-
-// 浏览次数统计
-let visits = localStorage.getItem("visitCount") || 0;
-visits++;
-localStorage.setItem("visitCount", visits);
-visitCountElem.textContent = `浏览次数：${visits}`;
-
-// 樱花背景动画
-function createSakura() {
-  const petal = document.createElement("div");
-  petal.className = "sakura";
-  petal.style.left = `${Math.random() * 100}%`;
-  petal.style.animationDuration = `${5 + Math.random() * 5}s`;
-  document.getElementById("sakura-container").appendChild(petal);
-  setTimeout(() => petal.remove(), 10000);
-}
-setInterval(createSakura, 500);
-
-// 启动
-initGallery();
+  if (autoSwitchTimer) clearInterval(autoSwitchTimer
