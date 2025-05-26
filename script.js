@@ -11,24 +11,20 @@ document.addEventListener("DOMContentLoaded", () => {
   const resEl = document.getElementById("resolution");
   const audio = document.getElementById("bg-music");
 
-  // 读取并保存历史缓存
   let history = JSON.parse(localStorage.getItem("galleryHistory") || "[]");
 
-  // 播放背景音乐
+  // 背景音乐播放
   audio.volume = 0.5;
   audio.play().catch(() => {});
 
-  // 切换夜间模式
   themeBtn.onclick = () => document.body.classList.toggle("dark");
 
-  // 全屏预览
   fsBtn.onclick = () => {
     document.fullscreenElement
       ? document.exitFullscreen()
       : document.documentElement.requestFullscreen();
   };
 
-  // 清除缓存
   clearCacheBtn.onclick = () => {
     localStorage.removeItem("galleryHistory");
     history = [];
@@ -47,34 +43,45 @@ document.addEventListener("DOMContentLoaded", () => {
   setInterval(updateTime, 1000);
   updateTime();
 
-  // 渲染缩略图
+  function generateFileName(url) {
+    const timestamp = new Date().toISOString().replace(/[:.-]/g, "");
+    const extMatch = url.match(/\.(jpg|jpeg|png|gif|webp)/i);
+    const ext = extMatch ? extMatch[0] : ".jpg";
+    return `image_${timestamp}${ext}`;
+  }
+
   function renderThumbs() {
     thumbs.innerHTML = "";
     history.forEach(src => {
       const t = document.createElement("img");
       t.src = src;
+      t.loading = "lazy";
       t.onclick = () => updateMain(src);
+      t.ondblclick = () => {
+        const link = document.createElement("a");
+        link.href = src;
+        link.download = generateFileName(src);
+        link.click();
+      };
       if (src === mainImg.src) t.classList.add("active");
       thumbs.appendChild(t);
     });
   }
 
-  // 更新主图
   function updateMain(src) {
     mainImg.src = src;
     dlBtn.href = src;
+    dlBtn.download = generateFileName(src);
     mainImg.onload = () => {
       resEl.textContent = `${mainImg.naturalWidth}×${mainImg.naturalHeight}`;
       renderThumbs();
     };
   }
 
-  // 点击主图缩放
   mainImg.onclick = () => {
     mainImg.classList.toggle("zoomed");
   };
 
-  // 加载新图
   function loadImage() {
     const img = new Image();
     img.onload = () => {
@@ -86,7 +93,6 @@ document.addEventListener("DOMContentLoaded", () => {
     img.src = API_URL + "&_=" + Date.now();
   }
 
-  // 启动
   if (history.length) {
     updateMain(history[history.length - 1]);
   } else {
