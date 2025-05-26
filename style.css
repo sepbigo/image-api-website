@@ -122,7 +122,6 @@ body.dark .download-tip {
   gap: 12px;
   margin-bottom: 8px;
   flex-wrap: wrap;
-  justify-content: center;
 }
 .btn {
   padding: 10px 20px;
@@ -139,9 +138,6 @@ body.dark .download-tip {
 }
 .btn:focus {
   outline: none;
-}
-.btn:hover {
-  opacity: 0.9;
 }
 
 .info-bottom {
@@ -165,25 +161,16 @@ body.dark footer {
   color: #666;
 }
 
-/* 响应式优化 */
-@media (max-width: 768px) {
+/* 移动端优化 */
+@media (max-width: 600px) {
   header h1 {
-    font-size: 2rem;
-  }
-  .btn {
-    padding: 8px 14px;
-    font-size: 0.85rem;
-  }
-}
-@media (max-width: 480px) {
-  header h1 {
-    font-size: 1.6rem;
+    font-size: 1.8rem;
   }
   header h2 {
     font-size: 0.9rem;
   }
   .btn {
-    padding: 6px 12px;
+    padding: 8px 14px;
     font-size: 0.8rem;
   }
   .thumbs-container img {
