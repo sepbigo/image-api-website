@@ -13,10 +13,10 @@ function createPetal() {
   return {
     x: Math.random() * canvas.width,
     y: -20,
-    r: 5 + Math.random() * 5,
-    speed: 1 + Math.random() * 2,
-    drift: Math.random() * 2 - 1,
-    opacity: 0.5 + Math.random() * 0.5,
+    r: 6 + Math.random() * 4,
+    speed: 0.3 + Math.random() * 0.8, // 更慢的下落速度
+    drift: Math.random() * 1.5 - 0.75,
+    opacity: 0.2 + Math.random() * 0.3 // 更低的透明度
   };
 }
 
