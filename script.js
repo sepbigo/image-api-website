@@ -80,7 +80,6 @@ document.addEventListener("DOMContentLoaded", () => {
   function loadImage() {
     const img = new Image();
     img.onload = () => {
-      // 缓存最新
       history.push(img.src);
       if (history.length > 5) history.shift();
       localStorage.setItem("galleryHistory", JSON.stringify(history));
