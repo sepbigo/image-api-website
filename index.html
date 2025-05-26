@@ -4,24 +4,22 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>春田花花随机高清壁纸</title>
-  <!-- 自定义字体 -->
-  <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- 樱花背景容器 -->
+  <!-- 樱花背景 -->
   <div id="sakura-container"></div>
   <!-- 背景音乐 -->
-  <audio id="bg-music" src="music.mp3" autoplay loop></audio>
+  <audio id="bg-music" src="https://tc.cecily.eu.org/file/1748193433058_石进-夜的钢琴曲五 (钢琴曲)-《非诚勿扰2》电影插曲.flac" autoplay loop></audio>
 
-  <!-- 标题区 -->
+  <!-- 标题 -->
   <header>
-    <h1>春田花花随机高清壁纸</h1>
+    <h1 class="gradient-text">春田花花随机高清壁纸</h1>
     <h2>每一次刷新，都是一场新的邂逅</h2>
   </header>
 
-  <!-- 主图区（16:9 容器）-->
+  <!-- 主图展示 -->
   <div class="main-container">
     <img id="main-image" src="" alt="加载中..." />
     <div class="resolution-bar">
@@ -29,26 +27,24 @@
     </div>
   </div>
 
-  <!-- 缩略图导航 -->
+  <!-- 缩略图 -->
   <div class="thumbs-container"></div>
 
-  <!-- 按钮区（缩略图下方） -->
+  <!-- 控制按钮 -->
   <div class="controls">
     <button id="toggle-theme" class="btn">夜间模式</button>
     <button id="fullscreen-btn" class="btn">全屏预览</button>
     <a id="download-btn" href="#" download="image.jpg" class="btn">下载图片</a>
   </div>
 
-  <!-- 底部信息：IP & 当前时间 -->
+  <!-- IP与时间 -->
   <div class="info-bottom">
     <span>IP: <strong id="client-ip">--</strong></span>
     <span>时间: <strong id="current-time">--</strong></span>
   </div>
 
   <!-- 页脚 -->
-  <footer>
-    &copy; 2025 春田花花疯人院 版权所有
-  </footer>
+  <footer>&copy; 2025 春田花花疯人院 版权所有</footer>
 
   <script src="script.js"></script>
 </body>
