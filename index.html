@@ -12,42 +12,42 @@
 <body>
   <!-- 樱花背景容器 -->
   <div id="sakura-container"></div>
-
   <!-- 背景音乐 -->
-  <audio id="bg-music" src="https://tc.cecily.eu.org/file/1748193433058_石进-夜的钢琴曲五 (钢琴曲)-《非诚勿扰2》电影插曲.flac" autoplay loop></audio>
+  <audio id="bg-music" src="music.mp3" autoplay loop></audio>
 
   <!-- 标题区 -->
   <header>
-    <h1 class="fade-in">春田花花随机高清壁纸</h1>
-    <h2 class="fade-in delay-1">每一次刷新，都是一场新的邂逅</h2>
+    <h1>春田花花随机高清壁纸</h1>
+    <h2>每一次刷新，都是一场新的邂逅</h2>
   </header>
 
-  <!-- 按钮区 -->
-  <div class="controls">
-    <button id="toggle-theme" class="btn ripple">夜间模式</button>
-    <button id="fullscreen-btn" class="btn ripple">全屏预览</button>
-    <a id="download-btn" href="#" download="image.jpg" class="btn ripple">下载图片</a>
-  </div>
-
-  <!-- 主图区 -->
+  <!-- 主图区（16:9 容器）-->
   <div class="main-container">
-    <img id="main-image" src="" alt="加载中..." class="pop-in" />
+    <img id="main-image" src="" alt="加载中..." />
+    <div class="resolution-bar">
+      分辨率: <strong id="resolution">--</strong>
+    </div>
   </div>
 
-  <!-- 信息展示区 -->
-  <div class="info-bar slide-in">
-    <span>分辨率: <strong id="resolution">--</strong></span>
-    <span>访问量: <strong id="visit-count">--</strong></span>
+  <!-- 缩略图导航 -->
+  <div class="thumbs-container"></div>
+
+  <!-- 按钮区（缩略图下方） -->
+  <div class="controls">
+    <button id="toggle-theme" class="btn">夜间模式</button>
+    <button id="fullscreen-btn" class="btn">全屏预览</button>
+    <a id="download-btn" href="#" download="image.jpg" class="btn">下载图片</a>
+  </div>
+
+  <!-- 底部信息：IP & 当前时间 -->
+  <div class="info-bottom">
     <span>IP: <strong id="client-ip">--</strong></span>
     <span>时间: <strong id="current-time">--</strong></span>
   </div>
 
-  <!-- 缩略图导航 -->
-  <div class="thumbs-container slide-in delay-2"></div>
-
   <!-- 页脚 -->
-  <footer class="slide-in delay-3">
-    &copy; 2025 幻影画廊 版权所有
+  <footer>
+    &copy; 2025 春田花花疯人院 版权所有
   </footer>
 
   <script src="script.js"></script>
